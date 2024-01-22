@@ -1,0 +1,9 @@
+<div>
+    <h2>Reservations</h2>
+    <ul>
+      <li *ngFor="let reservation of reservations">
+        {{ reservation.guestName }} - {{ reservation.checkInDate }} to {{ reservation.checkOutDate }}
+      </li>
+    </ul>
+  </div>
+`

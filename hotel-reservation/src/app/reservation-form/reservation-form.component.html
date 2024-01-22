@@ -1,0 +1,76 @@
+<div class="bold-line"></div>
+<div class="container">
+  <div class="window">
+    <div class="overlay"></div>
+    <div class="content">
+      <div class="welcome">Hello There!</div>
+      <!-- <div class="subtitle">
+        We're almost done. Before using our services, you need to log in to your account.
+      </div> -->
+      <div class="input-fields">
+        <label>
+          Guest Name:
+          <input
+            type="text"
+            [(ngModel)]="guestName"
+            class="input-line full-width"
+            name="guestName"
+          />
+        </label>
+        <label>
+          Check-In Date:
+          <input
+            type="date"
+            [(ngModel)]="checkInDate"
+            class="input-line full-width"
+            name="checkInDate"
+          />
+        </label>
+        <br />
+        <label>
+          Check-Out Date:
+          <input
+            type="date"
+            [(ngModel)]="checkOutDate"
+            class="input-line full-width"
+            name="checkOutDate"
+          />
+        </label>
+        <label>
+          Room Type:
+          <input
+            type="text"
+            [(ngModel)]="roomType"
+            class="input-line full-width"
+            name="guestName"
+          />
+        </label>
+        <label>
+          Number Of Nights
+          <input
+            type="number"
+            [(ngModel)]="numberOfNights"
+            class="input-line full-width"
+            name="guestName"
+          />
+        </label>
+      </div>
+      <div>
+        <button
+          class="ghost-round full-width"
+          type="submit"
+          (click)="handleSubmit()"
+        >
+          Create Your Reservation
+        </button>
+        <button
+          class="ghost-round full-width" 
+          type="submit"
+          (click)="checkReservation()"
+        >
+          Check Your Reservations
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

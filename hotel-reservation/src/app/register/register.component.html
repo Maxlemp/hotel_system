@@ -1,0 +1,52 @@
+<div class="bold-line"></div>
+<div class="container">
+  <div class="window">
+    <div class="overlay"></div>
+    <div class="content">
+      <div class="welcome">Hello There!</div>
+      <div class="subtitle">
+        We're almost done. Before using our services you need to create an
+        account.
+      </div>
+      <form [formGroup]="registrationForm" (ngSubmit)="handleSubmit()">
+        <div class="input-fields">
+          <label>
+            Username:
+            <input
+              type="text"
+              class="input-line full-width"
+              formControlName="username"
+            />
+            <div *ngIf="usernameControl?.invalid && (usernameControl?.dirty || usernameControl?.touched)" class="error-message">
+              Username is required.
+            </div>
+            
+          </label>
+          <label>
+            Password:
+            <input
+              type="password"
+              class="input-line full-width"
+              formControlName="password"
+            />
+            <div *ngIf="passwordControl?.invalid && (passwordControl?.dirty || passwordControl?.touched)" class="error-message">
+              Password is required.
+            </div>
+          </label>
+        </div>
+        <div class="spacing">
+          or continue with <span class="highlight">Facebook</span>
+        </div>
+        <div>
+          <button
+            class="ghost-round full-width"
+            type="submit"
+            [disabled]="registrationForm.invalid"
+          >
+            Create Account
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
