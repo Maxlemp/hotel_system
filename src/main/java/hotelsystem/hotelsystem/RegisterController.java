@@ -8,16 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.SecretKey;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/register")
+@CrossOrigin(origins = "http://localhost:4200",  methods = {RequestMethod.POST, RequestMethod.OPTIONS})
 public class RegisterController {
 
     private final UserRepository userRepository;
@@ -75,4 +73,5 @@ public class RegisterController {
             throw new RuntimeException("Failed to generate JWT token");
         }
     }
+
 }

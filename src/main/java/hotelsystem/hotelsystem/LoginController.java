@@ -10,21 +10,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 
 
 @RestController
 @RequestMapping("/api/login")
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, methods = {RequestMethod.POST, RequestMethod.OPTIONS})
+
 public class LoginController {
 
     private final AuthenticationManager authenticationManager;
@@ -44,8 +46,11 @@ public class LoginController {
     }
 
     @PostMapping
-    public ResponseEntity<String> loginUser(@RequestBody User user, HttpServletRequest request) {
+    public ResponseEntity<String> loginUser(@RequestBody User user, HttpServletRequest request,
+                                            HttpServletResponse response) {
         try {
+            logger.info("Received login request for user: " + user.getUsername());
+
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 
@@ -55,11 +60,20 @@ public class LoginController {
             String jwtToken = extractTokenFromRequest(request);
             logger.info("Created token: " + jwtToken);
 
+            logger.info("Received login request for user: " + user.getUsername());
+            logger.info("Created token: " + jwtToken);
+
+
             if (validateToken(jwtToken)) {
+
+                // Provide the token in the response body for the client to handle.
                 return ResponseEntity.ok(jwtToken);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
             }
+        } catch (BadCredentialsException e) {
+            logger.error("Invalid credentials for user: " + user.getUsername());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         } catch (Exception e) {
             logger.error("Login failed: " + e.getMessage());
             e.printStackTrace();
@@ -71,25 +85,26 @@ public class LoginController {
     private String extractTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer")) {
-            return bearerToken.substring(7);
+            // Trim the token to remove leading/trailing spaces
+            return bearerToken.substring(7).trim();
         }
         return null;
     }
 
 
+
+
     private boolean validateToken(String jwtToken) {
         if (jwtToken != null) {
             try {
-                Claims claims = Jwts.parserBuilder()
+                // Add more detailed logging
+                logger.info("Validating token: " + jwtToken);
+
+                // The parsing itself will throw an exception if the token is invalid
+                Jwts.parserBuilder()
                         .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
                         .build()
-                        .parseClaimsJws(jwtToken)
-                        .getBody();
-
-
-                logger.info("Token claims: " + claims.toString());
-
-
+                        .parseClaimsJws(jwtToken);
 
                 return true;
             } catch (Exception e) {
@@ -107,5 +122,7 @@ public class LoginController {
 
     private void logError(String message) {
         logger.error(message);
+
     }
+
 }
